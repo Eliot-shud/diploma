@@ -42,13 +42,13 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: "${secrets.DB_NAME}"
-      POSTGRES_USER: "${secrets.DB_USER}"
-      POSTGRES_PASSWORD: "${secrets.DB_PASSWORD}"
+      POSTGRES_DB: "${DB_NAME}"
+      POSTGRES_USER: "${DB_USER}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
     restart: always
     container_name: db
     volumes:
-      - db_data:/var/lib/postgresql/data/
+      - diploma_data:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
       interval: 5s
