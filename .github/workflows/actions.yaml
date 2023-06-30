@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: clone code
-        uses: actions/checkout@v3.5.2
+        uses: actions/checkout@v2
       - name: docker build
         run: docker build -t elerbek1kamoloff/skypro1:$GITHUB_REF_NAME-$GITHUB_RUN_ID .
       - name: docker login
@@ -26,24 +26,13 @@ jobs:
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
     steps:
       - name: clone code
-        uses: actions/checkout@v3.5.2
+        uses: actions/checkout@v2
 
       - name: render configs
         run: |-
           mkdir deploy
           cat docker-compose-ci.yaml | envsubst > deploy_ci/docker-compose.yaml
-          cat .env | envsubst > docker_ci/.env
-
-      - name: copy files to server
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          port: ${{ secrets.PORT }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          source: "deploy_ci/docker-compose.yaml, deploy_ci/.env"
-          target: "todolist"
-          strip_components: 1
+          cat deploy/.env | envsubst > deploy_ci/.env
 
       - name: copy files to server
         uses: appleboy/scp-action@master
