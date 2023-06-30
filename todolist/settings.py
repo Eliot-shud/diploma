@@ -1,14 +1,18 @@
 from pathlib import Path
+from environ import Env
+
+env = Env()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+env.read_env(BASE_DIR.joinpath('.env'))
 
 
-SECRET_KEY = 'django-insecure-*aoa)4hq(3q)gd-+ljk63*5_ve-s@_!q4o6z2@sy^-nm91_a06'
+SECRET_KEY = env('DJANGO_SECRET_KEY')
 
 
-DEBUG = True
+DEBUG = env('DEBUG', default=False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 INSTALLED_APPS = [
@@ -18,6 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'core',
 ]
 
 MIDDLEWARE = [
@@ -31,6 +36,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'todolist.urls'
+
+AUTH_USER_MODEL = 'core.User'
 
 TEMPLATES = [
     {
@@ -53,9 +60,13 @@ WSGI_APPLICATION = 'todolist.wsgi.application'
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": env('DB_NAME'),
+        "USER": env('DB_USER'),
+        "PASSWORD": env('DB_PASSWORD'),
+        "HOST": env('DB_HOST', default='127.0.0.1'),
+        "PORT": "5432",
     }
 }
 
@@ -88,3 +99,4 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
