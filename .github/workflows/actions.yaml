@@ -1,21 +1,25 @@
 name: Build and deploy action
-on:
-  push:
-    branches: ["master"]
+on: [push]
 
 jobs:
   build_and_push:
     runs-on: ubuntu-20.04
     steps:
-      - name: Checkout
+      - name: clone code
         uses: actions/checkout@v3.5.2
 
-      - name: Login to DockerHub
+      - name: docker build
+        run: docker build -t elerbek1kamoloff/skypro1:$GITHUB_REF_NAME-$GITHUB_RUN_ID .
+
+      - name: docker login
         uses: docker/login-action@v2
+
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-          logout: true
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: docker push
+        run: docker push elerbek1kamoloff/skypro1:$GITHUB_REF_NAME-$GITHUB_RUN_ID
 
       - name: Build and Push Container
         run:
@@ -29,25 +33,35 @@ jobs:
       POSTGRES_USER: ${{ secrets.DB_USER }}
       POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      POSTGRES_NAME: ${{ secrets.DB_NAME }}
-      DEBUG: ${{secrets.DEBUG}}
 
     steps:
       - name: clone code
         uses: actions/checkout@v3.5.2
 
-      - name: Render configs
+      - name: render configs
         run: |-
-            mkdir deploy_ci
-            cat docker-compose-ci.yaml | envsubst > deploy_ci/docker-compose.yaml
-            cat deploy/.env | envsubst > deploy_ci/.env
+          mkdir deploy
+          cat docker-compose-ci.yaml | envsubst > deploy_ci/docker-compose.yaml
+          cat .env | envsubst > docker_ci/.env
 
       - name: copy files to server
-        uses: appleboy/scp-action@v0.1.4
+        uses: appleboy/scp-action@master
         with:
-            host: ${{ secrets.SSH_HOST}}
-            username: ${{ secrets.SSH_USERNAME}}
-            password: ${{ secrets.SSH_PASSWORD}}
+            host: ${{ secrets.HOST }}
+            port: ${{ secrets.PORT }}
+            username: ${{ secrets.USERNAME }}
+            password: ${{ secrets.PASSWORD }}
             source: "deploy_ci/docker-compose.yaml, deploy_ci/.env"
-            target: "deploy"
+            target: "todolist"
             strip_components: 1
+
+      - name: deploy app
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          script: |
+            cd todolist
+            docker-compose down
+            docker-compose up -d
