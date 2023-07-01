@@ -6,8 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONNUNBUFFERED 1
 
 COPY requirements.txt .
-RUN apt-get update && apt-get install -y --no-install-recommends gcc
-
+# RUN apt-get update && apt-get install -y --no-install-recommends gcc
 
 RUN pip install -r requirements.txt
 
