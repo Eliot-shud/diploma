@@ -17,7 +17,7 @@ services:
     image: elerbek1kamoloff/skypro1:$GITHUB_REF_NAME-$GITHUB_RUN_ID .
     restart: always
     env_file:
-      - .env
+      - ../app/.env
     depends_on:
       db:
         condition: service_healthy

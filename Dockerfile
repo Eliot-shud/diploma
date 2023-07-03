@@ -1,17 +1,18 @@
 FROM python:3.10-slim
 
-WORKDIR /code
+WORKDIR /opt/todolist
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONNUNBUFFERED 1
 
-COPY requirements.txt .
 RUN apt-get update && apt-get install -y --no-install-recommends gcc
 
+COPY requirements.txt .
 
 RUN pip install -r requirements.txt
 
-COPY . .
+COPY /app .
+
 EXPOSE 8000
 
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
