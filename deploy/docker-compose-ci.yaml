@@ -17,7 +17,7 @@ services:
     image: elerbek1kamoloff/skypro1:$GITHUB_REF_NAME-$GITHUB_RUN_ID .
     restart: always
     env_file:
-      - ../app/.env
+      - .env
     depends_on:
       db:
         condition: service_healthy
@@ -35,10 +35,10 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
-      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      SECRET_KEY: ${SECRET_KEY}
       DB_HOST: ${DB_HOST}
     command:
-      sh -c "python ./manage.py migrate"
+      sh -c "python manage.py migrate"
 
   db:
     networks:
