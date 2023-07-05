@@ -27,7 +27,7 @@ services:
   migrations:
     networks:
       - my-network
-    image: elerbek1kamoloff/skypro1:$GITHUB_REF_NAME-$GITHUB_RUN_ID .
+    image: elerbek1kamoloff/skypro1:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     depends_on:
       db:
         condition: service_healthy
