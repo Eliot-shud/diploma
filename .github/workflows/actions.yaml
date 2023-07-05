@@ -22,7 +22,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/skypro1:${{ env.TAG }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/skypro1:latest
 
   deploy:
     needs: build
