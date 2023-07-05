@@ -1,11 +1,10 @@
 name: Build and deploy action
-on: [push]
+on: [ push ]
+
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      TAG: $GITHUB_REF_NAME-$GITHUB_RUN_ID
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -22,7 +21,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/skypro1:latest
+          tags: elerbek1kamoloff/todolist_diploma:latest
 
   deploy:
     needs: build
@@ -45,13 +44,13 @@ jobs:
       - name: copy files to server
         uses: appleboy/ssh-action@master
         with:
-            host: ${{ secrets.HOST }}
-            port: ${{ secrets.PORT }}
-            username: ${{ secrets.USERNAME }}
-            password: ${{ secrets.PASSWORD }}
-            source: "deploy_ci/docker-compose.yaml, deploy_ci/.env"
-            target: "todolist"
-            strip_components: 1
+          host: ${{ secrets.HOST }}
+          port: ${{ secrets.PORT }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          source: "deploy_ci/docker-compose.yaml, deploy_ci/.env"
+          target: "todolist"
+          strip_components: 1
 
       - name: deploy app
         uses: appleboy/ssh-action@master
@@ -61,5 +60,6 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           script: |
             cd todolist
+            docker-compose pull
             docker-compose down
             docker-compose up -d
