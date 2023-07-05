@@ -35,10 +35,10 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
-      SECRET_KEY: ${SECRET_KEY}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
       DB_HOST: ${DB_HOST}
     command:
-      sh -c "python manage.py migrate"
+      sh -c "python ./manage.py migrate"
 
   db:
     networks:

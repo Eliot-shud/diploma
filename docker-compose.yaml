@@ -11,11 +11,11 @@ services:
 
   api:
     build:
-      context: ..
+      context: .
       dockerfile: Dockerfile
     restart: always
     env_file:
-      - ./../app/.env
+      - .env
     depends_on:
       db:
         condition: service_healthy
@@ -26,30 +26,29 @@ services:
 
   migrations:
     build:
-      context: ..
+      context: .
       dockerfile: Dockerfile
     depends_on:
       db:
         condition: service_healthy
     env_file:
-      - ./../app/.env
+      - .env
     command: python manage.py migrate
 
   db:
     image: postgres:15.1-alpine
     restart: always
     env_file:
-      - ./../app/.env
+      - .env
     ports:
       - 5432:5432
     volumes:
       - diploma_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_POSTGRES}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 5s
       timeout: 5s
       retries: 10
 
 volumes:
   diploma_data:
-
