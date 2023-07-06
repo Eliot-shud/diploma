@@ -41,8 +41,8 @@ jobs:
           cat docker-compose-ci.yaml | envsubst > deploy/docker-compose.yaml
           cat .env | envsubst > deploy/.env
 
-      - name: copy files to server
-        uses: appleboy/ssh-action@master
+      - name: copy files
+        uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.HOST }}
           port: ${{ secrets.PORT }}
