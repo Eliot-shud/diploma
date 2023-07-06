@@ -49,10 +49,10 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           source: "deploy/docker-compose.yaml, deploy/.env"
-          target: "todolist"
+          target: "deploy"
           strip_components: 1
 
-      - name: deploy app
+      - name: run
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
