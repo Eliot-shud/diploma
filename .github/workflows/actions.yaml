@@ -38,8 +38,8 @@ jobs:
       - name: render configs
         run: |-
           mkdir deploy
-          cat docker-compose-ci.yaml | envsubst > deploy_ci/docker-compose.yaml
-          cat .env | envsubst > docker_ci/.env
+          cat docker-compose-ci.yaml | envsubst > deploy/docker-compose.yaml
+          cat .env | envsubst > docker/.env
 
       - name: copy files to server
         uses: appleboy/ssh-action@master
@@ -48,7 +48,7 @@ jobs:
           port: ${{ secrets.PORT }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          source: "deploy_ci/docker-compose.yaml, deploy_ci/.env"
+          source: "deploy/docker-compose.yaml, deploy/.env"
           target: "todolist"
           strip_components: 1
 
