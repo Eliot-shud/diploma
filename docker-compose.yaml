@@ -33,7 +33,7 @@ services:
         condition: service_healthy
     env_file:
       - .env
-    command: python manage.py migrate
+    command: sh -c "python manage.py migrate"
 
   db:
     image: postgres:15.1-alpine

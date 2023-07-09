@@ -34,11 +34,11 @@ services:
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
-      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
-      DB_HOST: ${DB_HOST}
+      POSTGRES_DB: "todolist_db"
+      SECRET_KEY: ${SECRET_KEY}
+      POSTGRES_HOST: "db"
     command:
-      sh -c "python ./manage.py migrate"
+      sh -c "python manage.py migrate"
 
   db:
     networks:
@@ -48,11 +48,11 @@ services:
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_DB: "todolist_db"
     volumes:
       - diploma_data:/var/lib/postgresql/data/
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d todolist_db" ]
       interval: 5s
       timeout: 5s
       retries: 10
