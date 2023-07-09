@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env.read_env(BASE_DIR.joinpath('.env'))
 
 
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = env('DJANGO_SECRET_KEY')
 
 
 DEBUG = env('DEBUG', default=False)
@@ -37,7 +37,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'todolist.urls'
 
-AUTH_USER_MODEL = 'core.User'
 
 TEMPLATES = [
     {
@@ -99,3 +98,5 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'core.User'
