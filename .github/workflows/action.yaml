@@ -20,7 +20,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: elerbek1kamoloff/sky_pro:latest
+          tags: elerbek1kamoloff/todolist_diploma:latest
 
   deploy:
     needs: build
