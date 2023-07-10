@@ -38,7 +38,7 @@ jobs:
         run: |-
           mkdir deploy
           cat docker-compose-ci.yaml | envsubst > deploy/docker-compose.yaml
-#          cat .env | envsubst > docker/.env
+
       - name: copy files to server
         uses: appleboy/ssh-action@master
         with:
