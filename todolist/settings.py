@@ -1,8 +1,12 @@
 from pathlib import Path
-from environ import Env
+
+import environ
 import os
 
-env = Env()
+
+env = environ.Env(
+    DEBUG=(bool, True)
+)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 env.read_env(BASE_DIR.joinpath('.env'))
@@ -25,7 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'core',
-#    'social_django',
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -39,8 +43,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'todolist.urls'
-
-AUTH_USER_MODEL = 'core.User'
 
 TEMPLATES = [
     {
@@ -103,17 +105,19 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-)
+AUTH_USER_MODEL = 'core.User'
 
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
-SOCIAL_AUTH_VK_SCOPE = ["email"]
-SOCIAL_AUTH_VK_OAUTH2_KEY = env("SOCIAL_AUTH_VK_OAUTH2_KEY")
-SOCIAL_AUTH_VK_OAUTH2_SECRET = env("SOCIAL_AUTH_VK_OAUTH2_SECRET")
-SOCIAL_AUTH_URL_NAMESPACE = "social"
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = "/categories"
-SOCIAL_AUTH_LOGIN_ERROR_URL = "/login-error/"
-SOCIAL_AUTH_USER_MODEL = "core.User"
 
+SOCIAL_AUTH_VK_OAUTH2_KEY = env('SOCIAL_AUTH_VK_OAUTH2_KEY')
+SOCIAL_AUTH_VK_OAUTH2_SECRET = env('SOCIAL_AUTH_VK_OAUTH2_SECRET')
 
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
+SOCIAL_AUTH_NEW_USER_REDIRECT_URL = '/logged-in/'
+SOCIAL_AUTH_USER_MODEL = 'core.User'
+SOCIAL_AUTH_VK_OAUTH2_SCOPE = ['email']
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.vk.VKOAuth2',
+    'django.contrib.auth.backends.ModelBackend'
+)

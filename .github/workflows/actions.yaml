@@ -1,38 +1,36 @@
 name: Build and deploy action
-on: [push]
+on: [ push ]
 
 jobs:
-  build_and_push:
-    runs-on: ubuntu-20.04
+  build:
+    runs-on: ubuntu-latest
     steps:
-      - name: clone code
+      - name: Checkout
         uses: actions/checkout@v3
-
-      - name: docker build
-        run: docker build -t elerbek1kamoloff/skypro1:$GITHUB_REF_NAME-$GITHUB_RUN_ID .
-
-      - name: docker login
+      - name: Login to Docker Hub
         uses: docker/login-action@v2
-
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_TOKEN }}
-
-      - name: docker push
-        run: docker push elerbek1kamoloff/skypro1:$GITHUB_REF_NAME-$GITHUB_RUN_ID
-
-      - name: Build and Push Container
-        run:
-          docker build -t elerbek1kamoloff/skypro1:$GITHUB_REF_NAME-$GITHUB_RUN_ID .
-          docker push elerbek1kamoloff/skypro1:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: elerbek1kamoloff/todolist_diploma:latest
 
   deploy:
-    needs: build_and_push
+    needs: build
     runs-on: ubuntu-20.04
     env:
       POSTGRES_USER: ${{ secrets.DB_USER }}
       POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      SOCIAL_AUTH_VK_OAUTH2_KEY: ${{ secrets.SOCIAL_AUTH_VK_OAUTH2_KEY }}
+      SOCIAL_AUTH_VK_OAUTH2_SECRET: ${{ secrets.SOCIAL_AUTH_VK_OAUTH2_SECRET }}
 
     steps:
       - name: clone code
@@ -42,26 +40,25 @@ jobs:
         run: |-
           mkdir deploy
           cat docker-compose-ci.yaml | envsubst > deploy/docker-compose.yaml
-          cat .env | envsubst > deploy/.env
-
+          cat .env | envsubst > docker/.env
       - name: copy files to server
-        uses: appleboy/scp-action@master
+        uses: appleboy/ssh-action@master
         with:
-            host: ${{ secrets.HOST }}
-            port: ${{ secrets.PORT }}
-            username: ${{ secrets.USERNAME }}
-            password: ${{ secrets.USERNAME }}
-            source: "deploy/docker-compose.yaml, deploy/.env"
-            target: "todolist"
-            strip_components: 1
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          source: "deploy/docker-compose.yaml, deploy/.env"
+          target: "todolist"
+          strip_components: 1
 
       - name: deploy app
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
           script: |
             cd todolist
+            docker-compose pull
             docker-compose down
-            docker-compose up -d
+            docker-compose up -dD
