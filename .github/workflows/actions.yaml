@@ -23,7 +23,7 @@ jobs:
           tags: elerbek1kamoloff/todolist_diploma:latest
 
   deploy:
-    needs: build_and_push
+    needs: build
     runs-on: ubuntu-20.04
     env:
       SECRET_KEY: ${{secrets.SECRET_KEY}}
