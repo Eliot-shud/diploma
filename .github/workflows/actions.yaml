@@ -43,10 +43,9 @@ jobs:
           cat docker-compose-ci.yaml | envsubst > deploy/docker-compose.yaml
 
       - name: copy files to server # Шаг копирования файлов на сервер
-        uses: appleboy/scp-action@v0.1.4
+        uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }} # Хост сервера из секретов
-          port: ${{ secrets.SSH_PORT }} # Порт сервера из секретов
           username: ${{ secrets.SSH_USERNAME }} # Имя пользователя сервера из секретов
           password: ${{ secrets.SSH_PASSWORD }} # Пароль пользователя сервера из секретов
           source: "deploy/*" # Исходные файлы для копирования
@@ -54,7 +53,7 @@ jobs:
           strip_components: 1
 
       - name: deploy app
-        uses: appleboy/ssh-action@v0.1.10
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
