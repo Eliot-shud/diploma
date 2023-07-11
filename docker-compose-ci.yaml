@@ -20,6 +20,7 @@ services:
       migrations:
         condition: service_completed_successfully
 
+
   migrations:
     image: elerbek1kamoloff/todolist_diploma:latest
     env_file:
