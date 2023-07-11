@@ -45,4 +45,4 @@ services:
 
 
 volumes:
-  todolist:
+  diploma_data:
