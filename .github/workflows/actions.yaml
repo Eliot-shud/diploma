@@ -28,11 +28,6 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-20.04
-    env:
-      POSTGRES_USER: ${{ secrets.DB_USER }} # Пользователь базы данных из секретов
-      POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }} # Пароль базы данных из секретов
-      SECRET_KEY: ${{ secrets.SECRET_KEY }} # Секретный ключ из секретов
-
     steps:
       - name: clone code # Шаг клонирования репозитория
         uses: actions/checkout@v3.5.2
@@ -40,7 +35,7 @@ jobs:
       - name: render configs
         run: |- # Выполнение команд в рабочем окружении
           mkdir deploy
-          cat docker-compose-ci.yaml | envsubst > deploy/docker-compose.yaml
+          cp docker-compose-ci.yaml  deploy/docker-compose.yaml
 
       - name: copy files to server # Шаг копирования файлов на сервер
         uses: appleboy/scp-action@master
