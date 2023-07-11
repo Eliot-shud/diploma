@@ -22,6 +22,8 @@ services:
 
   migrations:
     image: elerbek1kamoloff/todolist_diploma:latest
+    env_file:
+      - .env
     depends_on:
       db:
         condition: service_healthy
