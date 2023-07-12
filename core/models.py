@@ -9,4 +9,4 @@ class User(AbstractUser):
         "email",
         "password",
         "password_repeat"
-    ]
+      # REQUIRED_FIELDS = []

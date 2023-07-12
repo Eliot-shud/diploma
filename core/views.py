@@ -43,3 +43,5 @@ class UpdatePasswordView(generics.UpdateAPIView):
 
     def get_object(self):
         return self.request.user
+      
+#from django.shortcuts import render
