@@ -3,10 +3,4 @@ from django.db import models
 
 
 class User(AbstractUser):
-    REQUIRED_FIELDS = [
-        "first_name",
-        "last_name",
-        "email",
-        "password",
-        "password_repeat"
-    ]
+    REQUIRED_FIELDS = []
