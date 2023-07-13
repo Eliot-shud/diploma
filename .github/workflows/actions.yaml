@@ -41,6 +41,7 @@ jobs:
 
       - name: copy files to server # Шаг копирования файлов на сервер
         uses: appleboy/scp-action@master
+
         with:
           host: ${{ secrets.SSH_HOST }} # публичный адрес сервера из секретов
           username: ${{ secrets.SSH_USERNAME }} # Имя пользователя сервера из секретов
