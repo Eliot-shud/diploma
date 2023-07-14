@@ -36,6 +36,7 @@ jobs:
         run: |- # Выполнение команд в рабочем окружении
           mkdir deploy
           cp docker-compose-ci.yaml  deploy/docker-compose.yaml
+
       - name: copy files to server # Шаг копирования файлов на сервер
         uses: appleboy/scp-action@master
         with:

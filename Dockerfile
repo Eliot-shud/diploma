@@ -8,8 +8,8 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # установка зависимостей
-RUN apt-get update && apt-get install -y --no-install-recommends gcc
 COPY requirements.txt .
+RUN apt-get update && apt-get install -y --no-install-recommends gcc
 RUN pip install -r requirements.txt
 
 # копирование содержимого в контейнер
