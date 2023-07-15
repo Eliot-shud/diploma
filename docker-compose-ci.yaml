@@ -11,6 +11,12 @@ services:
 
   api:
     image: elerbek1kamoloff/todolist_diploma:latest
+    environment:
+      DB_NAME: ${DB_NAME}  # имя базы данных
+      DB_USER: ${DB_USER}  # пользователь базы данных
+      DB_PASSWORD: ${DB_PASSWORD}  # пароля базы данных=
+      SOCIAL_AUTH_VK_OAUTH2_KEY: ${SOCIAL_AUTH_VK_OAUTH2_KEY} # id приложения VK
+      SOCIAL_AUTH_VK_OAUTH2_SECRET: ${SOCIAL_AUTH_VK_OAUTH2_SECRET} # Секрет приложения VK
     restart: always
     env_file:
       - .env
@@ -22,6 +28,12 @@ services:
 
   migrations:
     image: elerbek1kamoloff/todolist_diploma:latest
+    environment:
+      DB_NAME: ${DB_NAME}  # имя базы данных
+      DB_USER: ${DB_USER}  # пользователь базы данных
+      DB_PASSWORD: ${DB_PASSWORD}  # пароля базы данных
+      SOCIAL_AUTH_VK_OAUTH2_KEY: ${SOCIAL_AUTH_VK_OAUTH2_KEY} # id приложения VK
+      SOCIAL_AUTH_VK_OAUTH2_SECRET: ${SOCIAL_AUTH_VK_OAUTH2_SECRET} # Секрет приложения VK
     env_file:
       - .env
     depends_on:
