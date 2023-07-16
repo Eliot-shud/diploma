@@ -1,50 +1,8 @@
 version: '3.8'
 
 services:
-  frontend:
-    image: sermalenk/skypro-front:lesson-35
-    restart: always
-    depends_on:
-      - api
-    ports:
-      - "80:80"
-
-  api:
-    image: elerbek1kamoloff/todolist_diploma:latest
-    environment:
-      DB_NAME: ${DB_NAME}  # имя базы данных
-      DB_USER: ${DB_USER}  # пользователь базы данных
-      DB_PASSWORD: ${DB_PASSWORD}  # пароля базы данных=
-      SOCIAL_AUTH_VK_OAUTH2_KEY: ${SOCIAL_AUTH_VK_OAUTH2_KEY} # id приложения VK
-      SOCIAL_AUTH_VK_OAUTH2_SECRET: ${SOCIAL_AUTH_VK_OAUTH2_SECRET} # Секрет приложения VK
-    restart: always
-    env_file:
-      - .env
-    depends_on:
-      db:
-        condition: service_healthy
-      migrations:
-        condition: service_completed_successfully
-
-  migrations:
-    image: elerbek1kamoloff/todolist_diploma:latest
-    environment:
-      DB_NAME: ${DB_NAME}  # имя базы данных
-      DB_USER: ${DB_USER}  # пользователь базы данных
-      DB_PASSWORD: ${DB_PASSWORD}  # пароля базы данных
-      SOCIAL_AUTH_VK_OAUTH2_KEY: ${SOCIAL_AUTH_VK_OAUTH2_KEY} # id приложения VK
-      SOCIAL_AUTH_VK_OAUTH2_SECRET: ${SOCIAL_AUTH_VK_OAUTH2_SECRET} # Секрет приложения VK
-    env_file:
-      - .env
-    depends_on:
-      db:
-        condition: service_healthy
-    command:
-      sh -c "python manage.py migrate"
-
   db:
     image: postgres:15.0-alpine
-    restart: always
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -52,11 +10,37 @@ services:
     volumes:
       - diploma_data:/var/lib/postgresql/data/
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
+      test: pg_isready -U ${DB_USER} -d ${DB_NAME}
       interval: 5s
       timeout: 5s
       retries: 10
 
+  migrations:
+    image: elerbek1kamoloff/todolist_diploma:latest
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+    command: python manage.py migrate
+
+  api:
+    image: elerbek1kamoloff/todolist_diploma:latest
+    restart: always
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+
+  frontend:
+    image: sermalenk/skypro-front:lesson-35
+    restart: always
+    depends_on:
+      api:
+        condition: service_started
+    ports:
+      - "80:80"
 
 volumes:
   diploma_data:
