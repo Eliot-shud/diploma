@@ -23,6 +23,7 @@ services:
         condition: service_healthy
     command: python manage.py migrate
 
+
   api:
     image: elerbek1kamoloff/todolist_diploma:latest
     restart: always
