@@ -12,7 +12,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }} # Логин DockerHub из секретов
           password: ${{ secrets.DOCKERHUB_TOKEN }} # Пароль DockerHub из секретов
-
       - name: Set up Docker Buildx # Шаг сборки и публикации контейнера
         uses: docker/setup-buildx-action@v2
       - name: Build and push
