@@ -1,19 +1,18 @@
 name: Build and deploy action
 on: [ push ]
 
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Login to Docker Hub
+      - name: Checkout # Шаг клонирования репозитория
+        uses: actions/checkout@v3.5.2
+      - name: Login to DockerHub # Шаг входа в DockerHub
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Set up Docker Buildx
+          username: ${{ secrets.DOCKERHUB_USERNAME }} # Логин DockerHub из секретов
+          password: ${{ secrets.DOCKERHUB_TOKEN }} # Пароль DockerHub из секретов
+      - name: Set up Docker Buildx # Шаг сборки и публикации контейнера
         uses: docker/setup-buildx-action@v2
       - name: Build and push
         uses: docker/build-push-action@v4
@@ -26,40 +25,39 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-20.04
-    env:
-      POSTGRES_USER: ${{ secrets.DB_USER }}
-      POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}
-
     steps:
-      - name: clone code
+      - name: clone code # Шаг клонирования репозитория
         uses: actions/checkout@v3.5.2
-
       - name: render configs
-        run: |-
+        run: |- # Выполнение команд в рабочем окружении
           mkdir deploy
-          cat docker-compose-ci.yaml | envsubst > deploy/docker-compose.yaml
-          cat .env | envsubst > deploy/.env
-
-      - name: copy files
+          cp docker-compose-ci.yaml  deploy/docker-compose.yaml
+      - name: copy files to server # Шаг копирования файлов на сервер
         uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.SERVER_HOST }}
-          port: ${{ secrets.PORT }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          password: ${{ secrets.SERVER_PASSWORD }}
-          source: "deploy/docker-compose.yaml, deploy/.env"
-          target: "deploy"
+          host: ${{ secrets.SSH_HOST }} # Хост сервера из секретов
+          username: ${{ secrets.SSH_USERNAME }} # Имя пользователя сервера из секретов
+          password: ${{ secrets.SSH_PASSWORD }} # Пароль пользователя сервера из секретов
+          source: "deploy/*" # Исходные файлы для копирования
+          target: "todolist" # Целевая директория на сервере
           strip_components: 1
-
-      - name: run
+      - name: deploy app
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          password: ${{ secrets.SERVER_PASSWORD }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd todolist
             docker-compose pull
             docker-compose down
             docker-compose up -d
+      - name: Cleanup
+        if: always()
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST}}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            docker system prune -a -f
