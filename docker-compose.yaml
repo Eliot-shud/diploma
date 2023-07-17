@@ -40,9 +40,9 @@ services:
         condition: service_completed_successfully
     ports:
       - "8000:8000"
-    volumes:
-      - ./core/:/code/core/
-      - ./todolist/:/code/todolist/
+#    volumes:
+#      - ./core/:/code/core/
+#      - ./todolist/:/code/todolist/
 
   frontend:
     image: sermalenk/skypro-front:lesson-35
