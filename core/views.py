@@ -1,5 +1,3 @@
-from django.shortcuts import render
-
 from django.contrib.auth import get_user_model, login, logout
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
@@ -28,7 +26,6 @@ class LoginView(generics.CreateAPIView):
 
 class ProfileView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
-    queryset = USER_MODEL.objects.all()
     permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
