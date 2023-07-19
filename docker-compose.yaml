@@ -45,7 +45,7 @@ services:
       - ./todolist/:/code/todolist/
 
   frontend:
-    image: sermalenk/skypro-front:lesson-36
+    image: sermalenk/skypro-front:lesson-37
     depends_on:
       api:
         condition: service_started

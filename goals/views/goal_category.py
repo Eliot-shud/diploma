@@ -24,16 +24,14 @@ class GoalCategoryListView(generics.ListAPIView):
 
     def get_queryset(self):
         return GoalCategory.objects.select_related('user').filter(
-            user=self.request.user, is_deleted=False
+            board__participants__user=self.request.user, is_deleted=True
         )
 
 
 class GoalCategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = GoalCategoryWithUserSerializer
     permission_classes = [GoalCategoryPermission]
-
-    def get_queryset(self):
-        return GoalCategory.objects.select_related('user').exclude(is_deleted=True)
+    queryset = GoalCategory.objects.exclude(is_deleted=True)
 
     def perform_destroy(self, instance: GoalCategory):
         with transaction.atomic():
