@@ -43,6 +43,7 @@ services:
     volumes:
       - ./core/:/code/core/
       - ./todolist/:/code/todolist/
+      - ./goals/:/code/goals/
 
   frontend:
     image: sermalenk/skypro-front:lesson-36
