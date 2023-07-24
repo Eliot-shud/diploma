@@ -56,7 +56,6 @@ services:
         condition: service_completed_successfully
     command: sh -c "python manage.py runbot"
 
-
   frontend:
     image: sermalenk/skypro-front:lesson-38
     depends_on:
