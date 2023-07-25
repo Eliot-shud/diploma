@@ -5,7 +5,7 @@ from rest_framework import permissions, filters, generics
 
 from goals.models import Goal, BoardParticipant, Board
 from goals.permissions import BoardPermission
-from goals.serializers import BoardSerializer, BoardWithParticipantsSerializer
+from goals.serializers import BoardSerializer, BoardWithParticipantSerializer
 
 
 class BoardCreateView(generics.CreateAPIView):
@@ -30,7 +30,7 @@ class BoardListView(generics.ListAPIView):
 
 class BoardDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [BoardPermission]
-    serializer_class = BoardWithParticipantsSerializer
+    serializer_class = BoardWithParticipantSerializer
     queryset = Board.objects.prefetch_related('participants__user').exclude(is_deleted=True)
 
     def perform_destroy(self, instance: Board) -> None:
