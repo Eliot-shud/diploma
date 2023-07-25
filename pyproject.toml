@@ -1,0 +1,6 @@
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = 'todolist.settings'
+python_files = [
+    'test_*.py',
+    '*_test.py',
+]
