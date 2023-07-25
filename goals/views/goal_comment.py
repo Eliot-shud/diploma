@@ -4,11 +4,11 @@ from rest_framework.pagination import LimitOffsetPagination
 
 from goals.models import GoalComment
 from goals.permissions import GoalCommentPermission
-from goals.serializers import GoalCommentSerializer, GoalCommentWithUserSerializer
+from goals.serializers import GoalCommentsSerializer, GoalCommentWithUserSerializer
 
 
 class GoalCommentCreateView(generics.CreateAPIView):
-    serializer_class = GoalCommentSerializer
+    serializer_class = GoalCommentsSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 
